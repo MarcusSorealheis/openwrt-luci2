@@ -4,8 +4,8 @@
         "index": 30
     },
 	"network/apfreeqos": {
-		"title": "ApfreeQoS",
-		"acls": [ "apfreeqos" ],
+		"title": "ApfreeQOS",
+		"acls": [ "network" ],
 		"view": "network/apfreeqos",
 		"index": 8
 	},

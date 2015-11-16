@@ -42,11 +42,18 @@ Class.extend({
 		method: 'delete',
 		params: [ 'config', 'section', 'options' ]
 	}),
+	
+	// liudf added 20151112
+	callCommit: L.rpc.declare({
+		object:	'uci',
+		method:	'commit',
+		params:	[ 'config' ]
+	}),
 
 	callApply: L.rpc.declare({
 		object: 'uci',
 		method: 'apply',
-		params: [ 'timeout', 'rollback' ]
+		params: [ 'rollback', 'timeout' ]
 	}),
 
 	callConfirm: L.rpc.declare({
@@ -455,7 +462,13 @@ Class.extend({
 
 				pkgs[conf] = true;
 			}
-
+		
+		// liudf added 20151112
+		for(var conf in pkgs) {
+			if(pkgs[conf] == true)
+				self.callCommit(conf);
+		}
+		
 		return L.rpc.flush().then(function(responses) {
 			/*
 			 array "snew" holds references to the created uci sections,
@@ -483,7 +496,7 @@ Class.extend({
 		if (typeof(timeout) != 'number' || timeout < 1)
 			timeout = 10;
 
-		self.callApply(timeout, true).then(function(rv) {
+		self.callApply(true, timeout).then(function(rv) {
 			if (rv != 0)
 			{
 				deferred.rejectWith(self, [ rv ]);

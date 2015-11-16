@@ -1,0 +1,40 @@
+<ul class="nav nav-tabs">
+	<li class="active"><a data-toggle="tab" href="#stats"><%:Stats%></a></li>
+	<li><a data-toggle="tab" href="#rule1"><%:IP Traffic Rule%></a></li>
+	<li><a data-toggle="tab" href="#rule2"><%:VIP Traffic Rule%></a></li>
+	<li><a data-toggle="tab" href="#rule3"><%:Blacklist%></a></li>
+</ul>
+
+<div class="tab-content">
+	<div class="tab-pane active" id="stats">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><%:Online devices table statistics%></h3>
+			</div>
+			<div class="panel-body" id="ip_stat_table">
+			</div>
+		</div>
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><%:Online devices down rate pie statistics%></h3>
+			</div>
+			<div class="panel-body" id="ip_down_rate_pie">
+			</div>
+		</div>
+
+	</div>
+
+	<div class="tab-pane" id="rule1">
+		<div class="panel panel-default" id="ip_rule"/>
+	</div>
+
+	<div class="tab-pane" id="rule2">
+		<div class="panel panel-default" id="vip_rule"/>
+	</div>
+
+	<div class="tab-pane" id="rule3">
+		<div class="panel panel-default" id="blacklist_rule"/>
+	</div>
+
+</div>

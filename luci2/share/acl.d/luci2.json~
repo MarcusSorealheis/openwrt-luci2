@@ -345,28 +345,6 @@
 		}
 	},
 
-	"apfreeqos": {
-		"description": "apfree qos rule and ip stats",
-		"read": {
-			"ubus": {
-				"luci2.network.apfreeqos": [
-					"ip_stat",
-					"set_ip_rule",
-					"set_vip_rule",
-					"set_bl_rule"
-				]	
-			},
-			"uci": [
-				"apfreeqos"
-			]
-		},
-		"write": {
-			"uci": [
-				"apfreeqos"
-			]
-		}
-	},
-
 	"firewall": {
 		"description": "Firewall configuration",
 		"read": {

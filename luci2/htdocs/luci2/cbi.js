@@ -2966,8 +2966,11 @@
 		handleApply: function(ev)
 		{
 			var self = ev.data.self;
-
-			self.trigger('apply', ev);
+			
+			// liudf modified 20151112
+			self.send().then(function() {
+				self.trigger('apply', ev);
+			});
 		},
 
 		handleSave: function(ev)
