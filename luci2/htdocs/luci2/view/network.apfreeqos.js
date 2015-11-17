@@ -1,6 +1,10 @@
 L.ui.view.extend({
 	title: L.tr('ApfreeQoS'),
 
+	init: function() {
+		this._chart = { };	
+	},
+
 	getIpStats: L.rpc.declare({
 		object: 'luci2.network.apfreeqos',
 		method: 'ip_stat',
@@ -23,7 +27,11 @@ L.ui.view.extend({
 	}),
 
 	refreshIpStat: function() {
-		var self = this;
+		var self 		= this;
+		var pie_down	= self._chart.pie_down;
+		var pie_up		= self._chart.pie_up;
+		var pie_total	= self._chart.pie_total;
+
 		return $.when(
 			self.getIpStats().then(function(list) {
 				var ipStatTable = new L.ui.table({
@@ -42,20 +50,31 @@ L.ui.view.extend({
 				ipStatTable.rows(list);
 				ipStatTable.insertInto('#ip_stat_table');
 				
-				var data = [];
-				for(var i = 0; i < list.length; i++) {
+				var data_up 	= [];
+				var data_down 	= [];
+				var data_total 	= [];
+				for (var i = 0; i < list.length; i++) {
+					if (list[i].download == 0 && list[i].upload == 0 )
+						continue;
 					var o = {};
-					o.label = list.ip;
-					o.value = list.down;
-					data.push(o);
+					o.label = list[i].ip;
+					if (list[i].download != 0) {
+						o.value = list[i].download;
+						data_down.push(o);
+					}
+
+					if (list[i].upload != 0) {	
+						o.value = list[i].upload;
+						data_up.push(o);
+					}
+					
+					o.value = list[i].download + list[i].upload;
+					data_total.push(o);
 				}
 
-				var pie = new d3pie("ip_down_rate_pie", {
-						data: {
-							content: data
-						}
-				});
-				
+				pie_total.updateProp("data.content", data_total);						
+				pie_up.updateProp("data.content", data_up);						
+				pie_down.updateProp("data.content", data_down);						
 			})
 		)
 	},
@@ -181,7 +200,41 @@ L.ui.view.extend({
 		self.fillIpRules();
 		self.fillVipRules();
 		self.fillBlRules();
+		
+		var data = [ { label:"127.0.0.1", value:1 }];
+		self._chart.pie_total = new d3pie("ip_total_rate_pie", {
+			size: {
+					pieOuterRadius: "100%",
+					canvasHeight: 360
+			},
+
+			data: {
+				content: data
+			}
+		});
 	
+		self._chart.pie_down = new d3pie("ip_down_rate_pie", {
+			size: {
+					pieOuterRadius: "100%",
+					canvasHeight: 360
+			},
+
+			data: {
+				content: data
+			}
+		});
+	
+		self._chart.pie_up = new d3pie("ip_up_rate_pie", {
+			size: {
+					pieOuterRadius: "100%",
+					canvasHeight: 360
+			},
+
+			data: {
+				content: data
+			}
+		});
+
 		self.repeat(self.refreshIpStat, 5000);
 	}
 });
