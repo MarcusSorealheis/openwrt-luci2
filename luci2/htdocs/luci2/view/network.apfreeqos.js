@@ -71,10 +71,10 @@ L.ui.view.extend({
 					o.value = list[i].download + list[i].upload;
 					data_total.push(o);
 				}
-
-				pie_total.updateProp("data.content", data_total);						
-				pie_up.updateProp("data.content", data_up);						
-				pie_down.updateProp("data.content", data_down);						
+				
+				pie_total.update(data_total);						
+				pie_up.update(data_up);						
+				pie_down.update(data_down);						
 			})
 		)
 	},
@@ -202,38 +202,63 @@ L.ui.view.extend({
 		self.fillBlRules();
 		
 		var data = [ { label:"127.0.0.1", value:1 }];
-		self._chart.pie_total = new d3pie("ip_total_rate_pie", {
+
+		self._chart.pie_total = new L.ui.d3pie({
+			caption: L.tr("Online devices total rate pie"),
+			
+			header: {
+				title: {
+					text: "total rate pie"
+				},
+				location: "pie-center"
+			},
+
+			size: {
+					pieInnerRadius: "80%",
+					canvasHeight: 360
+			},
+			
+			data: data,
+		}); 	
+		self._chart.pie_total.insertInto('#ip_total_rate_pie');
+
+		self._chart.pie_down = new L.ui.d3pie({
+			caption: L.tr("Online devices down rate pie"),
+			
+			header: {
+				title: {
+					text: "down rate pie"
+				},
+				location: "pie-center"
+			},
+
 			size: {
 					pieOuterRadius: "100%",
 					canvasHeight: 360
 			},
+			
+			data: data,
+		}); 	
+		self._chart.pie_down.insertInto('#ip_down_rate_pie');
 
-			data: {
-				content: data
-			}
-		});
-	
-		self._chart.pie_down = new d3pie("ip_down_rate_pie", {
+		self._chart.pie_up = new L.ui.d3pie({
+			caption: L.tr("Online devices up rate pie"),
+			
+			header: {
+				title: {
+					text: "up rate pie"
+				},
+				location: "pie-center"
+			},
+
 			size: {
 					pieOuterRadius: "100%",
 					canvasHeight: 360
 			},
-
-			data: {
-				content: data
-			}
-		});
-	
-		self._chart.pie_up = new d3pie("ip_up_rate_pie", {
-			size: {
-					pieOuterRadius: "100%",
-					canvasHeight: 360
-			},
-
-			data: {
-				content: data
-			}
-		});
+			
+			data: data,
+		}); 	
+		self._chart.pie_up.insertInto('#ip_up_rate_pie');
 
 		self.repeat(self.refreshIpStat, 5000);
 	}

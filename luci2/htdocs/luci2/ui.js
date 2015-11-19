@@ -1575,6 +1575,61 @@
 			return span;
 		}
 	});
+	
+	ui_class.d3pie = ui_class.AbstractWidget.extend({
+		init: function() {
+			this._pie = { };
+		},
+		
+		update: function(data) {
+			this._pie.chart.updateProp("data.content", data);
+		},
+
+		render: function()
+		{
+			var fieldset = $('<fieldset />')
+				.addClass('cbi-section');
+
+			if (this.options.caption)
+				fieldset.append($('<legend />').append(this.options.caption));
+
+			var pie  = document.createElement('div');
+
+			this._pie.chart = new d3pie( pie, {
+				header: this.options.header,
+				size:	this.options.size,
+				data:	{
+					sortOrder: "value-asc",
+					smallSegmentGrouping: {
+						enabled: true,
+						value: 2,
+						valueType: "percentage",
+						label: "Other devices"
+					},
+					content: this.options.data
+				},
+				
+				tooltips: {
+					enabled: true,
+					type: "placeholder",
+					string: "{value} Bps",
+					styles: {
+						fadeInSpeed: 500,
+			 			backgroundColor: "#00cc99",
+			 			backgroundOpacity: 0.8,
+			 			color: "#ffffcc",
+			 			borderRadius: 4,
+			 			font: "verdana",
+			 			fontSize: 15,
+			 			padding: 10
+					}
+				}
+
+			});
+
+			return fieldset.append(pie);
+		}
+	});
 
 	return Class.extend(ui_class);
 })();
