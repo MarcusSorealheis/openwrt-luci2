@@ -337,6 +337,36 @@ rpc_luci2_system_diskfree(struct ubus_context *ctx, struct ubus_object *obj,
 	return 0;
 }
 
+
+// liudf added 20151123
+static int
+rpc_luci2_system_cpu_usage(struct ubus_context *ctx, struct ubus_object *obj,
+                          struct ubus_request_data *req, const char *method,
+                          struct blob_attr *msg)
+{
+	FILE *f;
+	char line[32] = { 0 };
+	char *cmd = "/bin/busybox top -bn1 |grep 'Cpu(s)' |cut -d',' -f4|sed 's/%id//g'";
+
+	blob_buf_init(&buf, 0);
+
+	if ((f = popen(cmd, "r")) != NULL)
+	{
+		if (fgets(line, sizeof(line) - 1, f)) {
+			float idle = strtof(line, (char **)NULL);
+			int usage = 100 - idle;
+			blobmsg_add_u32(&buf, "usage", usage);
+		}
+
+		fclose(f);
+	}
+
+	ubus_send_reply(ctx, req, buf.head);
+
+	return 0;
+}
+
+
 static int
 rpc_luci2_process_list(struct ubus_context *ctx, struct ubus_object *obj,
                        struct ubus_request_data *req, const char *method,
@@ -2754,6 +2784,8 @@ rpc_luci2_api_init(const struct rpc_daemon_ops *o, struct ubus_context *ctx)
 		UBUS_METHOD_NOARG("syslog",       rpc_luci2_system_log),
 		UBUS_METHOD_NOARG("dmesg",        rpc_luci2_system_dmesg),
 		UBUS_METHOD_NOARG("diskfree",     rpc_luci2_system_diskfree),
+		// liudf added 20151123
+		UBUS_METHOD_NOARG("cpu_usage",     rpc_luci2_system_cpu_usage),
 		UBUS_METHOD_NOARG("process_list", rpc_luci2_process_list),
 		UBUS_METHOD("process_signal",     rpc_luci2_process_signal,
 		                                  rpc_signal_policy),

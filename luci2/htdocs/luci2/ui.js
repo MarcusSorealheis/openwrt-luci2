@@ -1630,6 +1630,30 @@
 			return fieldset.append(pie);
 		}
 	});
+	
+	ui_class.liquidFillGauge = ui_class.AbstractWidget.extend({
+		init:	function() {
+			this._liquidFillGauge = { };
+		},
+
+		update: function(data) {
+			d3.select(this._liquidFillGauge.fillgauge)
+			  .on("valueChanged")(data);
+		},
+
+		render:	function() {
+			var fieldset = $('<fieldset />')
+				.addClass('cbi-section');
+
+			if (this.options.caption)
+				fieldset.append($('<legend />').append(this.options.caption));
+
+			this._liquidFillGauge.fillgauge  = document.createElement('div');
+			d3.select(this._liquidFillGauge.fillgauge).call(d3.liquidfillgauge, 10);
+
+			return fieldset.append(fillgauge);
+		}
+	});
 
 	return Class.extend(ui_class);
 })();
