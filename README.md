@@ -3,7 +3,7 @@
 ## Usage
 Your feeds.conf.default (or feeds.conf) should contain a line like:
 ```
-src-git luci https://github.com/openwrt/luci.git
+src-git luci2 https://github.com/liudf0716/openwrt-luci2.git
 ```
 
 To install all its package definitions, run:
